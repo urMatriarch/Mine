@@ -4,8 +4,6 @@ import tcod
 from actions import EscapeAction, MovementAction
 from input_handlers import EventHandler
 
-print("Beans")
-
 def main() -> None:
     screen_width = 80
     screen_height = 50
