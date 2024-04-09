@@ -67,7 +67,7 @@ def generate_dungeon(
     """Generate a new dungeon map."""
     dungeon = GameMap(map_width, map_height)
 
-    rooms: List[RectangularRoom]
+    rooms: List[RectangularRoom] = []
 
     for r in range(max_rooms):
         room_width = random.randint(room_min_size, room_max_size)
@@ -83,5 +83,21 @@ def generate_dungeon(
         if any(new_room.intersects(other_room) for other_room in rooms):
             continue #This room intersects, so go to the next attempt.
         #If there are no intersections, the room is valid.
+
+        #Dig out this rooms inner area.
+        dungeon.tiles[new_room.inner] = tile_types.floor
+
+        if len(rooms) == 0:
+            #The first room, where the player starts.
+            player.x, player.y = new_room.center
+        else: #All rooms after the first.
+            #Dig a tunnel between this room and the previous room
+            for x, y in tunnel_between(rooms[-1].center,new_room.center):
+                dungeon.tiles[x,y] = tile_types.floor
+
+        #Append new room to the rooms list
+        rooms.append(new_room)
+
+    return dungeon
 
         
